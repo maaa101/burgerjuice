@@ -4,18 +4,6 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 
 clear
-echo "Welcome to Burgerjuice!"
-echo "${bold}Disclaimer: If Burgerjuice doesn't work, do not ask for help in the official Grapejuice Discord or GitLab!!!${normal}"
-
-read -p "Continue with the installation? (Y/n) " yn
-
-case $yn in 
-	y ) clear;;
-	n ) exit;;
-	* ) echo "${bold}ERROR: Invalid response${normal}";
-		exit 1;;
-esac
-
 echo "Checking compatibility.."
 
 DISTRO=$( cat /etc/*-release | tr [:upper:] [:lower:] | grep -Poi '(ubuntu|fedora|arch|freedesktop)' | uniq )
@@ -30,19 +18,14 @@ if [ -z $DISTRO ]; then
     fi
 fi
 
+echo "Welcome to Burgerjuice!"
+echo "${bold}Disclaimer: If Burgerjuice doesn't work, do not ask for help in the official Grapejuice Discord or GitLab!!!${normal}"
 echo "${bold}You seem to be using $DISTRO Linux. ${normal}"
-read -p "Do you wish to install Grapejuice? (Y/n) " yn
 
-
-case $yn in 
-	y ) clear;;
-	n ) exit;;
-	* ) echo "Invalid response";
-		exit 1;;
-esac
+sleep 3.5
+clear
 
 if [ "$DISTRO" = "arch" ]; then
-        sleep 2
         echo "Installing dependecies.."
         sudo pacman -Syu wine gnutls lib32-gnutls libpulse lib32-libpulse git curl --needed --noconfirm
         echo "Installing Grapejuice.."
@@ -55,7 +38,6 @@ if [ "$DISTRO" = "arch" ]; then
         exit
     fi
 if [ "$DISTRO" = "fedora" ]; then
-        sleep 2
         echo "Installing dependecies.."
         sudo dnf install gettext git python3-devel python3-pip cairo-devel gobject-introspection-devel cairo-gobject-devel make xdg-utils glx-utils
         echo "Installing Grapejuice.."
@@ -68,7 +50,6 @@ if [ "$DISTRO" = "fedora" ]; then
         exit
     fi
 if [ "$DISTRO" = "ubuntu" ]; then
-        sleep 2
         echo "Installing dependecies.."
 
         # Add Grapejuice repo
