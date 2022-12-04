@@ -3,8 +3,6 @@
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-echo "Checking compatibility.."
-
 DISTRO=$( cat /etc/*-release | tr [:upper:] [:lower:] | grep -Poi '(ubuntu|fedora|arch|freedesktop)' | uniq )
 FINISHMESSAGE="${bold}Grapejuice was installed successfully!${normal}\nOpen Grapejuice using grapejuice-gui or from your application menu!\n\nWe recommend installing graphics drivers if you haven't already:\nhttps://github.com/lutris/docs/blob/master/InstallingDrivers.md"
 
@@ -18,12 +16,10 @@ if [ -z $DISTRO ]; then
     fi
 fi
 
-echo "${bold}You seem to be using $DISTRO Linux. ${normal}"
-
 if [ "$DISTRO" = "arch" ]; then
-        echo "Installing dependecies.."
+        # Install dependecies
         sudo pacman -Syu wine gnutls lib32-gnutls libpulse lib32-libpulse git curl --needed --noconfirm
-        echo "Installing Grapejuice.."
+        # Install Grapejuice
         git clone --depth=1 https://aur.archlinux.org/grapejuice-git.git /tmp/grapejuice-git
         cd /tmp/grapejuice-git
         makepkg -si
@@ -32,9 +28,9 @@ if [ "$DISTRO" = "arch" ]; then
         exit
     fi
 if [ "$DISTRO" = "fedora" ]; then
-        echo "Installing dependecies.."
+        # Install dependecies
         sudo dnf install gettext git python3-devel python3-pip cairo-devel gobject-introspection-devel cairo-gobject-devel make xdg-utils glx-utils
-        echo "Installing Grapejuice.."
+        # Install Grapejuice
         git clone --depth=1 https://gitlab.com/brinkervii/grapejuice.git /tmp/grapejuice
         cd /tmp/grapejuice
         ./install.py
@@ -43,8 +39,7 @@ if [ "$DISTRO" = "fedora" ]; then
         exit
     fi
 if [ "$DISTRO" = "debian" ]; then
-        echo "Installing dependecies.."
-
+        # Install dependecies
         # Add Grapejuice repo
         sudo dpkg --add-architecture i386
         curl https://gitlab.com/brinkervii/grapejuice/-/raw/master/ci_scripts/signing_keys/public_key.gpg | sudo tee /usr/share/keyrings/grapejuice-archive-keyring.gpg
@@ -61,15 +56,14 @@ if [ "$DISTRO" = "debian" ]; then
         sudo apt update
         sudo apt install --install-recommends winehq-staging
 
-        echo "Installing Grapejuice.."
+        # Install Grapejuice
         sudo apt install -y grapejuice
         clear
         echo -e $FINISHMESSAGE
         exit
     fi
 if [ "$DISTRO" = "ubuntu" ]; then
-        echo "Installing dependecies.."
-
+        # Install dependecies
         # Add Grapejuice repo
         sudo dpkg --add-architecture i386
         curl https://gitlab.com/brinkervii/grapejuice/-/raw/master/ci_scripts/signing_keys/public_key.gpg | sudo tee /usr/share/keyrings/grapejuice-archive-keyring.gpg
@@ -88,7 +82,7 @@ if [ "$DISTRO" = "ubuntu" ]; then
         sudo apt update
         sudo apt install --install-recommends winehq-staging
 
-        echo "Installing Grapejuice.."
+        # Install Grapejuice
         sudo apt install -y grapejuice
         clear
         echo -e $FINISHMESSAGE
