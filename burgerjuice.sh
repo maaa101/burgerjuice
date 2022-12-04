@@ -6,6 +6,7 @@ normal=$(tput sgr0)
 echo "Checking compatibility.."
 
 DISTRO=$( cat /etc/*-release | tr [:upper:] [:lower:] | grep -Poi '(ubuntu|fedora|arch|freedesktop)' | uniq )
+FINISHMESSAGE="${bold}Grapejuice was installed successfully!${normal}\nOpen Grapejuice using grapejuice-gui or from your application menu!\n\nWe recommend installing graphics drivers if you haven't already:\nhttps://github.com/lutris/docs/blob/master/InstallingDrivers.md"
 
 if [ "$DISTRO" = "freedesktop" ]; then
         echo "${bold}ERROR: Running burgerjuice via VSCode is unsupported.${normal}"
@@ -27,8 +28,7 @@ if [ "$DISTRO" = "arch" ]; then
         cd /tmp/grapejuice-git
         makepkg -si
         clear
-        echo "Grapejuice is installed!"
-        echo "Run it using grapejuice-gui or from your application menu!"
+        echo -e $FINISHMESSAGE
         exit
     fi
 if [ "$DISTRO" = "fedora" ]; then
@@ -39,8 +39,32 @@ if [ "$DISTRO" = "fedora" ]; then
         cd /tmp/grapejuice
         ./install.py
         clear
-        echo "Grapejuice is installed!"
-        echo "Run it using grapejuice-gui or from your application menu!"
+        echo -e $FINISHMESSAGE
+        exit
+    fi
+if [ "$DISTRO" = "debian" ]; then
+        echo "Installing dependecies.."
+
+        # Add Grapejuice repo
+        sudo dpkg --add-architecture i386
+        curl https://gitlab.com/brinkervii/grapejuice/-/raw/master/ci_scripts/signing_keys/public_key.gpg | sudo tee /usr/share/keyrings/grapejuice-archive-keyring.gpg
+        sudo tee /etc/apt/sources.list.d/grapejuice.list <<< 'deb [signed-by=/usr/share/keyrings/grapejuice-archive-keyring.gpg] https://brinkervii.gitlab.io/grapejuice/repositories/debian/ universal main'
+        sudo apt update && sudo apt upgrade -y
+
+        # Install wine
+        sudo mkdir -pm755 /etc/apt/keyrings
+        sudo wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
+
+        sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/debian/dists/bookworm/winehq-bookworm.sources
+        sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/debian/dists/bullseye/winehq-bullseye.sources
+
+        sudo apt update
+        sudo apt install --install-recommends winehq-staging
+
+        echo "Installing Grapejuice.."
+        sudo apt install -y grapejuice
+        clear
+        echo -e $FINISHMESSAGE
         exit
     fi
 if [ "$DISTRO" = "ubuntu" ]; then
@@ -67,7 +91,6 @@ if [ "$DISTRO" = "ubuntu" ]; then
         echo "Installing Grapejuice.."
         sudo apt install -y grapejuice
         clear
-        echo "Grapejuice is installed!"
-        echo "Run it using grapejuice-gui or from your application menu!"
+        echo -e $FINISHMESSAGE
         exit
     fi
