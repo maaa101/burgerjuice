@@ -3,7 +3,6 @@
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-clear
 echo "Checking compatibility.."
 
 DISTRO=$( cat /etc/*-release | tr [:upper:] [:lower:] | grep -Poi '(ubuntu|fedora|arch|freedesktop)' | uniq )
@@ -18,12 +17,7 @@ if [ -z $DISTRO ]; then
     fi
 fi
 
-echo "Welcome to Burgerjuice!"
-echo "${bold}Disclaimer: If Burgerjuice doesn't work, do not ask for help in the official Grapejuice Discord or GitLab!!!${normal}"
 echo "${bold}You seem to be using $DISTRO Linux. ${normal}"
-
-sleep 3.5
-clear
 
 if [ "$DISTRO" = "arch" ]; then
         echo "Installing dependecies.."
